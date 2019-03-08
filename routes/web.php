@@ -14,3 +14,8 @@
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::group(['prefix' => 'auth/twitch'], function(){
+    Route::get('/', 'TwitchController@redirectToProvider');
+    Route::get('/callback', 'TwitchController@handleProviderCallback');
+});
