@@ -48,6 +48,7 @@ class TwitchController extends Controller
             $streamer = $this->userService->getStreamer($request->name);
         } catch (\Exception $e) {
             if ($e->getCode() === 401){
+                // logout user if not authorized
                 $this->userService->logoutUser();
             }
 
