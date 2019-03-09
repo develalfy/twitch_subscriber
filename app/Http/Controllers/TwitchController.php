@@ -47,10 +47,17 @@ class TwitchController extends Controller
         try {
             $streamer = $this->userService->getStreamer($request->name);
         } catch (\Exception $e) {
-            dd($e->getMessage());
+            if ($e->getCode() === 401){
+                $this->userService->logoutUser();
+            }
+
             return redirect('/')->withErrors(['errors' => "Can't find streamer, plz try another one !"]);
         }
 
-        return $streamer;
+        if (!$streamer->count()){
+            return redirect('/')->withErrors(['errors' => "Can't find streamer, plz try another one !"]);
+        }
+
+        return view('home', compact('streamer'));
     }
 }

@@ -23,9 +23,10 @@ class UserService
     public function findOrCreate(\SocialiteProviders\Manager\OAuth2\User $twitchUser): User
     {
         $user = $this->user->where('twitch_id', $twitchUser->id)->first();
-
-        if ($user)
+        if ($user){
+            $this->updateToken($twitchUser);
             return $user;
+        }
 
         return $this->user->create([
             'name' => $twitchUser->name,
@@ -44,6 +45,14 @@ class UserService
     }
 
     /**
+     * Log the user out
+     */
+    public function logoutUser()
+    {
+        Auth::logout();
+    }
+
+    /**
      * Get streamer if exists
      * @param string $name
      * @return object
@@ -59,5 +68,15 @@ class UserService
             return collect($streamer[0]);
 
         return $streamer;
+    }
+
+    /**
+     * update twitch token
+     * @param \SocialiteProviders\Manager\OAuth2\User $twitchUser
+     * @return bool
+     */
+    private function updateToken(\SocialiteProviders\Manager\OAuth2\User $twitchUser)
+    {
+        return $this->user->where(['email' =>$twitchUser['email']])->first()->update(['twitch_token' => $twitchUser->token]);
     }
 }
