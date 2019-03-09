@@ -16,6 +16,11 @@ Route::get('/', function () {
 });
 
 Route::group(['prefix' => 'auth/twitch'], function(){
-    Route::get('/', 'TwitchController@redirectToProvider');
+    Route::get('/', 'TwitchController@redirectToProvider')->name('twitch.auth');
     Route::get('/callback', 'TwitchController@handleProviderCallback');
 });
+
+Auth::routes(['register' => false]);
+
+Route::get('/home', 'HomeController@index');
+Route::get('stream', 'TwitchController@stream')->name('stream');
